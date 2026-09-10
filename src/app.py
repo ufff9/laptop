@@ -11,6 +11,8 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+INR_TO_IDR = 190
+
 st.markdown(
     """
     <style>
@@ -32,6 +34,14 @@ st.markdown(
     [data-testid="stSidebar"],
     [data-testid="stSidebar"] > div:first-child,
     [data-testid="stSidebarContent"] { background: #f3f7f7 !important; border-right: 1px solid #dce7e5; }
+    [data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarCollapseButton"] button,
+    [data-testid="stSidebarNavCollapseButton"],
+    [data-testid="stSidebarNavCollapseButton"] button { background: #e2efed !important; color: #17212b !important; border: 1px solid #b9d1cd !important; border-radius: 8px !important; opacity: 1 !important; }
+    [data-testid="stSidebarCollapseButton"] button:hover,
+    [data-testid="stSidebarNavCollapseButton"] button:hover { background: #cbe4df !important; }
+    [data-testid="stSidebarCollapseButton"] svg,
+    [data-testid="stSidebarNavCollapseButton"] svg { color: #17212b !important; fill: #17212b !important; stroke: #17212b !important; opacity: 1 !important; }
     [data-testid="stSidebar"] * { color: #17212b !important; }
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] .stMarkdown p,
@@ -39,15 +49,24 @@ st.markdown(
     [data-testid="stSidebar"] .stMarkdown h3 { color: #17212b !important; }
     [data-testid="stSidebar"] .stCaption { color: #64727d !important; }
     [data-testid="stSidebar"] [data-baseweb="select"] > div,
-    [data-testid="stSidebar"] [data-baseweb="input"] > div { background: #24323d; border-color: #465662; }
+    [data-testid="stSidebar"] [data-baseweb="input"] > div { background: #ffffff !important; border-color: #cbd8d7 !important; }
     [data-testid="stSidebar"] [data-baseweb="select"] *,
     [data-testid="stSidebar"] [data-baseweb="input"] input { color: #17212b !important; }
-    [data-testid="stSidebar"] [data-baseweb="select"] > div { background: #ffffff; border-color: #ffffff; }
+    [data-testid="stSidebar"] [data-baseweb="select"],
+    [data-testid="stSidebar"] [data-baseweb="select"] > div,
+    [data-testid="stSidebar"] [data-baseweb="select"] [role="button"],
+    [data-testid="stSidebar"] [data-baseweb="input"],
+    [data-testid="stSidebar"] [data-baseweb="input"] > div,
+    [data-testid="stSidebar"] [data-baseweb="input"] [role="spinbutton"] { background: #ffffff !important; border-color: #cbd8d7 !important; color: #17212b !important; }
     [data-testid="stSidebar"] [data-baseweb="select"] [role="button"],
     [data-testid="stSidebar"] [data-baseweb="select"] [role="button"] *,
     [data-testid="stSidebar"] [data-baseweb="select"] span,
     [data-testid="stSidebar"] [data-baseweb="select"] svg { color: #17212b !important; fill: #17212b !important; opacity: 1 !important; }
-    [data-testid="stSidebar"] [data-baseweb="select"] input { color: #17212b !important; -webkit-text-fill-color: #17212b !important; }
+    [data-testid="stSidebar"] [data-baseweb="select"] input,
+    [data-testid="stSidebar"] [data-baseweb="input"] input { color: #17212b !important; -webkit-text-fill-color: #17212b !important; }
+    [data-testid="stSidebar"] [data-baseweb="select"] [aria-selected="true"],
+    [data-testid="stSidebar"] [data-baseweb="select"] [role="option"],
+    [data-testid="stSidebar"] [data-baseweb="select"] [role="option"] * { color: #17212b !important; background: #ffffff !important; }
     [data-testid="stSidebar"] [data-testid="stSlider"] [data-testid="stMarkdownContainer"] * { color: #17212b !important; }
     [data-testid="stSidebar"] [data-testid="stSlider"] [data-testid="stThumbValue"],
     [data-testid="stSidebar"] [data-testid="stSlider"] output { color: #17212b !important; opacity: 1 !important; }
@@ -57,26 +76,26 @@ st.markdown(
     .block-container { max-width: 1240px; padding: 3rem 3rem 4rem; }
     .eyebrow { color: var(--accent); font-size: .76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .55rem; }
     .hero { padding: 1.5rem 0 2.4rem; }
-    main .hero h1 { color: var(--ink) !important; font-size: clamp(2.2rem, 4vw, 4.2rem); line-height: 1.02; letter-spacing: -.04em; margin: 0; max-width: 760px; }
-    main .hero p { color: var(--muted) !important; font-size: 1.08rem; line-height: 1.65; max-width: 690px; margin-top: 1rem; }
+    main .hero h1 { color: #17212b !important; font-size: clamp(2.2rem, 4vw, 4.2rem); line-height: 1.02; letter-spacing: -.04em; margin: 0; max-width: 760px; text-shadow: none !important; }
+    .stApp .hero p { color: #50606b !important; -webkit-text-fill-color: #50606b !important; font-size: 1.08rem; line-height: 1.65; max-width: 690px; margin-top: 1rem; }
     .hero-rule { height: 4px; width: 76px; background: var(--accent); border-radius: 8px; margin-top: 1.8rem; }
-    .section-label { color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 1.5rem 0 .7rem; }
+    .section-label { color: #64727d !important; font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 1.5rem 0 .7rem; }
     .stat { background: rgba(255,255,255,.78); border: 1px solid var(--line); border-radius: 14px; padding: 1rem 1.2rem; min-height: 93px; }
-    .stat-label { color: var(--muted); font-size: .78rem; }
-    .stat-value { color: var(--ink); font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 700; margin-top: .35rem; }
+    .stat-label { color: #64727d !important; font-size: .78rem; }
+    .stat-value { color: #17212b !important; font-family: 'Space Grotesk', sans-serif; font-size: 1.35rem; font-weight: 700; margin-top: .35rem; }
     .result-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin: 2.4rem 0 1.1rem; }
-    .result-heading h2 { margin: 0; font-size: 1.65rem; letter-spacing: -.03em; }
-    .result-heading p { color: var(--muted); margin: 0; }
+    .result-heading h2 { color: #17212b !important; margin: 0; font-size: 1.65rem; letter-spacing: -.03em; }
+    .result-heading p { color: #64727d !important; margin: 0; }
     .laptop-card { background: rgba(255,255,255,.9); border: 1px solid var(--line); border-radius: 16px; padding: 1.35rem 1.5rem; margin: .85rem 0; box-shadow: 0 8px 24px rgba(23,33,43,.045); }
-    .card-kicker { color: var(--accent); font-size: .73rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-    .card-title { color: var(--ink); font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; line-height: 1.25; margin: .35rem 0 .85rem; }
-    .spec { color: #50606b; font-size: .88rem; line-height: 1.7; }
-    .spec strong { color: var(--ink); font-weight: 600; }
-    .price { color: var(--ink); font-family: 'Space Grotesk', sans-serif; font-size: 1.22rem; font-weight: 700; text-align: right; }
-    .score { color: var(--accent); font-size: .78rem; font-weight: 700; text-align: right; margin-top: .45rem; }
+    .card-kicker { color: #0f766e !important; font-size: .73rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .card-title { color: #17212b !important; font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700; line-height: 1.25; margin: .35rem 0 .85rem; }
+    .spec { color: #50606b !important; font-size: .88rem; line-height: 1.7; }
+    .spec strong { color: #17212b !important; font-weight: 600; }
+    .price { color: #17212b !important; font-family: 'Space Grotesk', sans-serif; font-size: 1.22rem; font-weight: 700; text-align: right; }
+    .score { color: #0f766e !important; font-size: .78rem; font-weight: 700; text-align: right; margin-top: .45rem; }
     .empty-state { background: var(--warm); border: 1px dashed #cbd5d1; border-radius: 16px; padding: 2rem; text-align: center; margin-top: 1.3rem; }
-    .empty-state h3 { margin: .2rem 0 .5rem; }
-    .empty-state p { color: var(--muted); margin: 0; }
+    .empty-state h3 { color: #17212b !important; margin: .2rem 0 .5rem; }
+    .empty-state p { color: #50606b !important; -webkit-text-fill-color: #50606b !important; margin: 0; }
     .stButton button { border-radius: 9px; font-weight: 700; min-height: 2.8rem; }
     @media (max-width: 800px) {
         .block-container { padding: 2rem 1.2rem 3rem; }
@@ -129,6 +148,7 @@ def load_data():
     return df
 
 df = load_data()
+df['price_idr'] = df['price'] * INR_TO_IDR
 
 st.markdown(
     """
@@ -156,9 +176,9 @@ use_case = st.sidebar.selectbox(
 # 2. Filter Budget / Harga
 max_price = st.sidebar.slider(
     "Maksimal Budget (Rp)", 
-    int(df['price'].min()), 
-    int(df['price'].max()), 
-    int(df['price'].mean())
+    int(df['price_idr'].min()),
+    int(df['price_idr'].max()),
+    int(df['price_idr'].mean())
 )
 
 # 3. Filter Merek
@@ -180,7 +200,7 @@ gpu_preference = st.sidebar.selectbox("Jenis Grafis", ["Semua", "Dedicated", "In
 if st.sidebar.button("🔍 Cari Rekomendasi Laptop"):
     # Salin dataframe untuk proses filtering
     filtered_df = df[
-        (df['price'] <= max_price) & 
+        (df['price_idr'] <= max_price) & 
         (df['ram_num'] >= min_ram) & 
         (df['memory_size'] >= min_storage)
     ].copy()
@@ -221,7 +241,7 @@ if st.sidebar.button("🔍 Cari Rekomendasi Laptop"):
     else:
         # Content-Based Filtering menggunakan MinMaxScaler & Cosine Similarity
         scaler = MinMaxScaler()
-        feature_cols = ['price', 'ram_num', 'memory_size', 'display_size', 'rating']
+        feature_cols = ['price_idr', 'ram_num', 'memory_size', 'display_size', 'rating']
         
         # Pastikan kolom tersedia
         available_features = [col for col in feature_cols if col in filtered_df.columns]
@@ -276,7 +296,7 @@ if st.sidebar.button("🔍 Cari Rekomendasi Laptop"):
                     f"""
                     <div class="laptop-card">
                         <div class="stat-label">Harga perkiraan</div>
-                        <div class="price">Rp {row['price']:,.0f}</div>
+                        <div class="price">Rp {row['price_idr']:,.0f}</div>
                         <div class="score">{row['similarity_score']:.1f}% cocok</div>
                     </div>
                     """,
